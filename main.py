@@ -12,10 +12,10 @@ def main(argv):
 	args = parser.parse_args()
 
 	steganana = Steganana(args.file)
-	if(args.encode != ''):
-		print steganna.decode()
+	if(args.encode == None):
+		print steganana.decode()
 	else:
-		steganna.encode(args.output)
+		steganana.encode(args.encode, args.output)
 
 if __name__ == '__main__':
 	main(sys.argv[1:])

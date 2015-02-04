@@ -1,5 +1,6 @@
 # Steganana.py
 
+import os
 from PIL import Image
 
 class Steganana:
@@ -8,11 +9,25 @@ class Steganana:
 		print("Steganana instance launched")
 		self.file = file
 		try:
-			this.image = Image.open(file)
-			this.image.load()
+			self.image = Image.open(file)
+			self.image.load()
 		except:
 			print("Unable to load the image")
-			return
+			exit(2)
 
 	def encode(self, text, output):
-		print("Encoding...")
+		print("Encoding..")
+
+		if(output == None):
+			output = 'output.png'
+
+		curTextPosition  = 0
+		curImagePosition = 0
+
+		while(curTextPosition < len(text)):
+			curChar = text[curTextPosition]
+			curTextPosition += 1
+
+			print bin(ord(curChar))[2]
+
+		print self.image.getpixel((0, 0))
