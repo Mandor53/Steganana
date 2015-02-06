@@ -9,10 +9,13 @@ def main(argv):
 	parser.add_argument('file', help='input file to be used to encode or decode the string')
 	parser.add_argument('--encode', help='encode the given string in the file')
 	parser.add_argument('--output', help='output file of the encoding process')
+	parser.add_argument('--getpixels', help='show the pixels of the image')
 	args = parser.parse_args()
 
 	steganana = Steganana(args.file)
-	if(args.encode == None):
+	if(args.getpixels != None):
+		print steganana.test()
+	elif(args.encode == None):
 		print steganana.decode()
 	else:
 		steganana.encode(args.encode, args.output)
