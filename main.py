@@ -16,6 +16,7 @@ def main(argv):
 	if(args.getpixels != None):
 		print steganana.test()
 	elif(args.encode == None):
+		print "    > Decoded text:"
 		print steganana.decode()
 	else:
 		steganana.encode(args.encode, args.output)

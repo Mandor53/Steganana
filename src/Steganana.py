@@ -6,22 +6,23 @@ from PIL import Image
 class Steganana:
 
 	def __init__(self, file):
-		print('Steganana instance launched')
-		self.file = file
+		print('    > Steganana instance launched')
+		self.file      = file
+		self.signature = 'Stegananasignature'
 		try:
 			self.image = Image.open(file)
 			self.image.load()
 		except:
-			print('Unable to load the image')
+			print(' ## Unable to load the image')
 			exit(2)
 
 	def encode(self, text, output):
-		print('Encoding...')
+		print('    > Encoding...')
 
 		if(output == None):
 			output = 'output.png'
 
-		binaryString = self.getBinaryString(text)
+		binaryString = self.getBinaryString(self.signature + text)
 
 		for y in range(0, self.image.size[1]):
 			for x in range(0, self.image.size[0]):
@@ -42,11 +43,17 @@ class Steganana:
 				self.image.putpixel((x, y), (r, g, b, a))
 
 		self.image.save(output)
-		print "Saved!"
+		print "    > Saved!"
 
 	def decode(self):
-		print('Decoding...')
+		decoded = self.decodeRaw()
 
+		if(self.signature != decoded[:len(self.signature)]):
+			return ' ## This file doesn\'t seem to contain any hidden text'
+
+		return decoded[len(self.signature):]
+
+	def decodeRaw(self):
 		decoded = ''
 		curChar = ''
 
@@ -80,8 +87,6 @@ class Steganana:
 			curTextPosition += 1
 
 			binaryString += self.char2bin(curChar)
-
-		print binaryString
 
 		return binaryString + '00000000'
 
