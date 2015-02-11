@@ -66,6 +66,12 @@ python main.py path/to/encodedimage.png --silent > output.txt
 Class usage
 -----------
 
+### Import the class
+
+``` python
+from src.Steganana import Steganana
+```
+
 ### Create a new instance of the class
 
 ``` python
