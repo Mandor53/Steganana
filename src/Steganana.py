@@ -5,24 +5,34 @@ from PIL import Image
 
 class Steganana:
 
-	def __init__(self, file):
-		print('    > Steganana instance launched')
-		self.file      = file
-		self.signature = 'Stegananasignature'
+	def __init__(self, file, silentmode):
+		self.file       = file
+		self.signature  = 'Stegananasignature'
+		self.silentMode = silentmode
+
+		self.info('Steganana instance launched')
 		try:
 			self.image = Image.open(file)
 			self.image.load()
 		except:
-			print(' ## Unable to load the image')
+			self.error('Unabled to load the image')
 			exit(2)
 
-	def encode(self, text, output):
-		print('    > Encoding...')
+	def encode(self, text, isFile, output):
+		self.info('Encoding...')
 
-		if(output == None):
-			output = 'output.png'
+		content = ''
 
-		binaryString = self.getBinaryString(self.signature + text)
+		if(isFile):
+			with file(text) as f: content = f.read()
+		else:
+			content = text
+
+		if(not self.checkAvailableStorage(self.signature + content)):
+			self.error('This image is too small to store this data')
+			return
+
+		binaryString = self.getBinaryString(self.signature + content)
 
 		for y in range(0, self.image.size[1]):
 			for x in range(0, self.image.size[0]):
@@ -43,14 +53,16 @@ class Steganana:
 				self.image.putpixel((x, y), (r, g, b, a))
 
 		self.image.save(output)
-		print "    > Saved!"
+		self.info('Saved!')
 
 	def decode(self):
 		decoded = self.decodeRaw()
 
 		if(self.signature != decoded[:len(self.signature)]):
-			return ' ## This file doesn\'t seem to contain any hidden text'
+			self.error('This file doesn\'t seem to contain any hidden text')
+			return
 
+		self.info('Decoded text:')
 		return decoded[len(self.signature):]
 
 	def decodeRaw(self):
@@ -60,9 +72,9 @@ class Steganana:
 		for y in range(0, self.image.size[1]):
 			for x in range(0, self.image.size[0]):
 				curColor = self.image.getpixel((x, y))
-				curChar += str(int(curColor[0] % 2 == 1))
-				curChar += str(int(curColor[1] % 2 == 1))
-				curChar += str(int(curColor[2] % 2 == 1))
+				curChar += str(int(curColor[0] % 2))
+				curChar += str(int(curColor[1] % 2))
+				curChar += str(int(curColor[2] % 2))
 
 				if(curChar[:8] == '00000000'):
 					return decoded
@@ -72,11 +84,9 @@ class Steganana:
 
 		return decoded
 
-	def test(self):
-		print('Showing up the pixels')
-		for y in range(0, 10):
-			for x in range(0, 10):
-				print self.image.getpixel((x, y))
+	def checkAvailableStorage(self, text):
+		return self.image.size[0] * self.image.size[1] * 3 > \
+			(len(text) + 1) * 8
 
 	def getBinaryString(self, text):
 		binaryString    = ''
@@ -114,3 +124,11 @@ class Steganana:
 			return self.makeEven(number)
 		else:
 			return self.makeOdd(number)
+
+	def info(self, text):
+		if(self.silentMode):
+			return;
+		print('    > ' + text)
+
+	def error(self, text):
+		print('  ## ' + text)
