@@ -1,4 +1,10 @@
 #!/usr/bin/python
+#
+# @author: Manuel Huez
+#
+# Steganana is a steganography project, coded in Python. It makes the user
+# able to hide content inside an image, and retrieve it with ease.
+# The hidden content is nearly invisible to the end user.
 
 import sys, argparse
 from src.Steganana import Steganana
