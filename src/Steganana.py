@@ -150,7 +150,8 @@ class Steganana:
 		return number & ~1
 
 	def manageOddEven(self, number, base):
-		# Needed by the project, makes a number even or odd depending on the base
+		# Needed by the project, makes a number even or odd depending
+		# on the base
 		return self.makeEven(number) if (base == '0') else self.makeOdd(number);
 
 	def info(self, text):
